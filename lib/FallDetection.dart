@@ -1,9 +1,16 @@
 import 'dart:math';
 
+/// 転倒検知クラスです。
 class FallDetection {
   List<double> normData = [];
   double threshold = 9.8; // 閾値
 
+  /// 加速度データを追加して転倒を検知します。
+  ///
+  /// @param x X軸方向の加速度
+  /// @param y Y軸方向の加速度
+  /// @param z Z軸方向の加速度
+  /// @return 転倒が検知された場合はtrue、そうでない場合はfalse
   bool addAccelerationData(double x, double y, double z) {
     // ノルムの計算
     double norm = calculateNorm(x, y, z);
@@ -17,25 +24,35 @@ class FallDetection {
     normData.add(norm);
     print('normData: ${normData.length}');
 
-    // 最新のデータを含む5つのノルムデータを使用して降ったかどうかを判定
+    // 最新のデータを含む5つのノルムデータを使用して転倒を判定
     if (normData.length >= 5) {
       bool isFalling = norm >= threshold;
       if (isFalling) {
         // 降った場合の処理
         return true;
-      }else{
+      } else {
         return false;
       }
-    }else{
+    } else {
       return false;
     }
   }
 
+  /// ノルムを計算します。
+  ///
+  /// @param x X軸方向の加速度
+  /// @param y Y軸方向の加速度
+  /// @param z Z軸方向の加速度
+  /// @return ノルムの値
   double calculateNorm(double x, double y, double z) {
     // ノルムの計算
     return sqrt(x * x + y * y + z * z);
   }
 
+  /// ノイズ除去処理を行います。
+  ///
+  /// @param norm ノルムの値
+  /// @return ノイズ除去されたノルムの値
   double noiseRemoval(double norm) {
     // ノイズ除去処理の実装（過去の5つのデータの平均値を使用）
     if (normData.length >= 5) {
